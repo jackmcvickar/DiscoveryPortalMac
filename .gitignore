@@ -1,0 +1,106 @@
+# =============================================================================
+# Divorce Discovery Assistant – Gitignore (Selective Tracking)
+# =============================================================================
+
+# Python cache and build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+venv/
+.env/
+
+# macOS system files
+.DS_Store
+
+# Git metadata
+.git/
+
+# Database files (ignore all, except canonical one)
+*.db
+*.sqlite
+!Data/dda.db
+
+# Logs – ignore transient .txt, keep .md snapshots
+logs/*.txt
+!logs/*.md
+
+# Reports – ignore scratch files
+*.log
+*.out
+
+# Build and analysis outputs (ignore noisy artifacts)
+Build*.txt
+Analyze*.txt
+Outputs/
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.swp
+
+# Xcode project noise
+*.xcuserstate
+*.xcworkspace
+*.xcuserdata/
+*.xccheckout
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+
+# Temporary files
+*.tmp
+*.bak
+*.old
+
+# =============================================================================
+# NEW RULES – Discovery documents and scans
+# =============================================================================
+
+# Common document formats
+*.pdf
+*.docx
+*.doc
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+
+# Image formats
+*.jpg
+*.jpeg
+*.png
+*.tiff
+*.bmp
+*.gif
+
+# Raw data folders (keep local only)
+Data/raw/
+Data/scans/
+Data/uploads/
+Data/tmp/
+*.zip
+*.csv
+*.jpg
+*.jpeg
+*.png
+*.tiff
+*.bmp
+*.gif
+Docs/
+Data/
+*.pdf
+*.zip
+*.csv
+*.jpg
+*.jpeg
+*.png
+*.tiff
+*.bmp
+*.gif
+Docs/
+Data/

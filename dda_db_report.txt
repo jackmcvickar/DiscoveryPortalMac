@@ -1,0 +1,19 @@
+DDA Database Report
+===================
+Total files found: 3
+
+Path: ./dda/dda.db
+Parent Folder: dda
+Size (bytes): 80498688
+Last Modified: 2025-11-12 11:36:53.216199
+----------------------------------------
+Path: ./dda/dda/dda.db
+Parent Folder: dda
+Size (bytes): 12288
+Last Modified: 2025-11-12 06:58:48.703552
+----------------------------------------
+Path: ./Data/dda.db
+Parent Folder: Data
+Size (bytes): 270856192
+Last Modified: 2025-11-10 21:06:42.894171
+----------------------------------------

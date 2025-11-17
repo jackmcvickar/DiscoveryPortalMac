@@ -1,0 +1,47 @@
+{
+  "aliases": {
+    "jcpenney": ["jcpenney", "jc penney", "jcp"],
+    "mastercard": ["mastercard", "mc"],
+    "wwt": ["wwt", "world wide technology"],
+    "eplus": ["eplus", "e+"],
+    "aws": ["aws", "amazon web services"],
+    "discover cc": ["discover", "disc bank"],
+    "jpmcb card": ["chase", "jpmcb"],
+    "citicards cbna": ["citi", "citicards"],
+    "american express": ["amex", "americanexpress"],
+    "bank of america": ["bofa", "bankofamerica"],
+    "olin": ["olin corp", "olin payroll"]
+  },
+  "special": {
+    "w2": { "category": "tax", "type": "w2", "pattern": "20\\d{2}" },
+    "mastercard": { "category": "tax", "type": "w2 employer", "pattern": "20\\d{2}" },
+    "wwt": { "category": "tax", "type": "w2 employer", "pattern": "20\\d{2}" },
+    "eplus": { "category": "tax", "type": "w2 employer", "pattern": "20\\d{2}" },
+    "aws": { "category": "tax", "type": "w2 employer", "pattern": "20\\d{2}" },
+    "jcpenney": { "category": "tax", "type": "w2 employer", "pattern": "20\\d{2}" },
+
+    "mo": { "category": "tax", "type": "state return", "pattern": "20\\d{2}" },
+    "il": { "category": "tax", "type": "state return", "pattern": "20\\d{2}" },
+
+    "tahoe": { "category": "possible asset", "type": "vehicle", "institution": "GM Financial" },
+    "charger": { "category": "possible asset", "type": "vehicle", "institution": "Ally Financial" },
+    "jeep": { "category": "possible asset", "type": "vehicle", "institution": "CEFCU" },
+    "spyder": { "category": "possible asset", "type": "vehicle", "institution": "Unknown" },
+
+    "boat": { "category": "possible asset", "type": "vehicle" },
+    "watercraft": { "category": "possible asset", "type": "vehicle" },
+
+    "loan": { "category": "possible asset", "type": "loan" },
+    "balance": { "category": "possible asset", "type": "balance" },
+    "value": { "category": "possible asset", "type": "valuation" },
+    "life": { "category": "possible asset", "type": "insurance" },
+    "athene": { "category": "possible asset", "type": "insurance" },
+    "pension": { "category": "possible asset", "type": "retirement" },
+    "lawsuits": { "category": "legal", "type": "litigation" },
+    "mcvickar": { "category": "owner", "type": "personal" }
+  },
+  "stoplist": [
+    "pdf", "statement", "statement.pdf", "mastercard.pdf", "signed.pdf",
+    "summary.xlsx", "docs", "mar", "may", "feb", "apr", "jan"
+  ]
+}

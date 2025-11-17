@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "FA287D50-CF8C-4A90-8F6B-666A04551ADC",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:DiscoveryPortalMac.xcodeproj",
+      "identifier" : "0E81F1342EC01AEA0068BBA9",
+      "name" : "DiscoveryPortalMac"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:DiscoveryPortalMac.xcodeproj",
+        "identifier" : "0E81F1432EC01AEA0068BBA9",
+        "name" : "DiscoveryPortalMacTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:DiscoveryPortalMac.xcodeproj",
+        "identifier" : "0E81F14D2EC01AEA0068BBA9",
+        "name" : "DiscoveryPortalMacUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -1,61 +1,67 @@
 import SwiftUI
+import Charts
 
 struct ContentView: View {
-    @EnvironmentObject var appState: AppState
+    @State private var documents: [Document] = []
+    @State private var summaries: [DocumentRepository.CategorySummary] = []
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Discovery Portal")
-                .font(.largeTitle)
-                .padding(.bottom, 8)
-
-            Text("Included Directories: \(appState.includedDirectories.count)")
+        VStack {
+            Text("Documents: \(documents.count)")
                 .font(.headline)
+                .padding()
 
-            HStack(spacing: 12) {
-                Button("Add Directory") {
-                    openDirectoryPicker()
+            // Stacked bar chart
+            if !summaries.isEmpty {
+                Chart {
+                    ForEach(summaries, id: \.category) { summary in
+                        BarMark(
+                            x: .value("Category", summary.category),
+                            y: .value("Inserted", summary.inserted)
+                        )
+                        .foregroundStyle(.green)
+
+                        BarMark(
+                            x: .value("Category", summary.category),
+                            y: .value("Updated", summary.updated)
+                        )
+                        .foregroundStyle(.orange)
+
+                        BarMark(
+                            x: .value("Category", summary.category),
+                            y: .value("Unchanged", summary.unchanged)
+                        )
+                        .foregroundStyle(.blue)
+                    }
                 }
-                Button("Index Files") {
-                    appState.indexIncludedDirectories()
-                }
-                Button("Clear All") {
-                    appState.clearAll()
-                }
+                .frame(height: 300)
+                .padding()
             }
-            .padding(.vertical)
 
-            if appState.isLoading {
-                ProgressView("Indexing \(appState.progress.processedFiles) of \(appState.progress.totalFiles) files…",
-                             value: appState.progress.percentage,
-                             total: 1.0)
-                    .padding(.bottom, 8)
+            // List view
+            List(summaries, id: \.category) { summary in
+                VStack(alignment: .leading) {
+                    Text(summary.category)
+                        .font(.headline)
+                    Text("Inserted: \(summary.inserted)")
+                        .foregroundColor(.green)
+                    Text("Updated: \(summary.updated)")
+                        .foregroundColor(.orange)
+                    Text("Unchanged: \(summary.unchanged)")
+                        .foregroundColor(.blue)
+                }
+                .padding(.vertical, 4)
             }
-
-            IndexedFilesView()
-                .environmentObject(appState)
-
-            Spacer()
         }
-        .padding()
-    }
-
-    private func openDirectoryPicker() {
-        let panel = NSOpenPanel()
-        panel.canChooseFiles = false
-        panel.canChooseDirectories = true
-        panel.allowsMultipleSelection = true
-
-        if panel.runModal() == .OK {
-            let paths = panel.urls.map { $0.path }
-            for path in paths {
-                appState.addDirectory(path)
+        .onAppear {
+            do {
+                let repo = try DocumentRepository()
+                documents = try repo.fetchAll()
+                summaries = try repo.fetchCategorySummary()
+                print("Fetched \(documents.count) documents")
+            } catch {
+                print("DB error: \(error)")
             }
         }
     }
-}
-
-#Preview {
-    ContentView()
-        .environmentObject(AppState())
 }

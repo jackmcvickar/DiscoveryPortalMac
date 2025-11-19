@@ -1,48 +1,89 @@
-import sqlite3, os, time
+#!/usr/bin/env python3
+# =============================================================================
+# File: db_utils.py
+# Purpose: Database helper functions for document ingestion pipeline
+# =============================================================================
 
-def insert_into_db(records, db_path):
-    print(f"📂 Inserting into DB at: {db_path}")
-    conn = sqlite3.connect(db_path)
-    cur = conn.cursor()
+import sqlite3
 
-    cur.execute("PRAGMA table_info(documents)")
-    cols = [row[1] for row in cur.fetchall()]
+def insert_document(records, db_conn_or_path):
+    """
+    Insert records into the documents table.
 
-    for filepath, category, status, account_id in records:
-        filename = os.path.basename(filepath)
-        try:
-            stat = os.stat(filepath)
-            filesize = stat.st_size
-            last_modified = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(stat.st_mtime))
-        except FileNotFoundError:
-            filesize, last_modified = None, None
+    Parameters
+    ----------
+    records : list of tuples
+        Each tuple should be (filepath, category, status, filename).
+    db_conn_or_path : sqlite3.Connection or str
+        Either an open SQLite connection or a path to the database file.
+    """
+    if isinstance(db_conn_or_path, sqlite3.Connection):
+        conn = db_conn_or_path
+        close_after = False
+    else:
+        conn = sqlite3.connect(db_conn_or_path)
+        close_after = True
 
-        year = None
-        for p in filepath.split(os.sep):
-            if p.isdigit() and len(p) == 4:
-                year = p
-                break
-
-        row = {
-            "category": category,
-            "account_id": account_id,
-            "status": status,
-            "filename": filename,
-            "filepath": filepath,
-            "filesize": filesize,
-            "last_modified": last_modified,
-            "year": year,
-            "owner": "Jack",
-            "confidence": 1.0,
-        }
-
-        valid_cols = {k: v for k, v in row.items() if k in cols}
-        placeholders = ", ".join(["?"] * len(valid_cols))
-        colnames = ", ".join(valid_cols.keys())
-
-        print(f"📝 Inserting row: {valid_cols}")
-        cur.execute(f"INSERT INTO documents ({colnames}) VALUES ({placeholders})", tuple(valid_cols.values()))
-
+    for filepath, category, status, filename in records:
+        conn.execute(
+            """
+            INSERT INTO documents (filepath, category, status, filename)
+            VALUES (?, ?, ?, ?)
+            """,
+            (filepath, category, status, filename),
+        )
     conn.commit()
-    conn.close()
+    if close_after:
+        conn.close()
+
+
+# Alias for backward compatibility with tests
+def insert_into_db(records, db_conn_or_path):
+    return insert_document(records, db_conn_or_path)
+
+
+def fetch_all_documents(db_conn_or_path):
+    """Return all documents from the database."""
+    if isinstance(db_conn_or_path, sqlite3.Connection):
+        conn = db_conn_or_path
+        close_after = False
+    else:
+        conn = sqlite3.connect(db_conn_or_path)
+        close_after = True
+
+    rows = conn.execute("SELECT * FROM documents").fetchall()
+    if close_after:
+        conn.close()
+    return rows
+
+
+def delete_document_by_path(filepath, db_conn_or_path):
+    """Delete a document record by its filepath."""
+    if isinstance(db_conn_or_path, sqlite3.Connection):
+        conn = db_conn_or_path
+        close_after = False
+    else:
+        conn = sqlite3.connect(db_conn_or_path)
+        close_after = True
+
+    conn.execute("DELETE FROM documents WHERE filepath=?", (filepath,))
+    conn.commit()
+    if close_after:
+        conn.close()
+
+
+def update_document_status(filepath, status, db_conn_or_path):
+    """Update the status of a document."""
+    if isinstance(db_conn_or_path, sqlite3.Connection):
+        conn = db_conn_or_path
+        close_after = False
+    else:
+        conn = sqlite3.connect(db_conn_or_path)
+        close_after = True
+
+    conn.execute("UPDATE documents SET status=? WHERE filepath=?", (status, filepath))
+    conn.commit()
+    if close_after:
+        conn.close()
+
 # end of script

@@ -1,15 +1,11 @@
-from dda.modules.config_utils import load_config
-from dda.modules.walker import walk_documents
-from dda.modules.csv_utils import export_csv
-from dda.modules.db_utils import insert_into_db
+# dda/modules/document_loader.py
 
-def main():
-    docs_path, outputs_path, db_path = load_config()
-    records = walk_documents(docs_path)
-    export_csv(records, outputs_path)
-    insert_into_db(records, db_path)
-
-if __name__ == "__main__":
-    main()
+def load_document(file_path: str) -> bytes:
+    """
+    Load a document from disk.
+    For now, just read raw bytes. Later you can expand to handle PDFs, images, etc.
+    """
+    with open(file_path, "rb") as f:
+        return f.read()
 
 # end of script

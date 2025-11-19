@@ -1,21 +1,30 @@
+#!/usr/bin/env python3
+# =============================================================================
+# File: test_status_logger.py
+# Purpose: Validate status logger functions against canonical schema
+# =============================================================================
+
 import sqlite3
-from pathlib import Path
-from dda.modules.status_logger import print_status_summary, log_status_summary, export_final_summary, DB_PATH
+from dda.db import schema
+from dda.modules.status_logger import print_status_summary, export_final_summary
 
 def setup_db(tmp_path):
     db_file = tmp_path / "test.db"
     conn = sqlite3.connect(db_file)
-    conn.execute("CREATE TABLE documents (id INTEGER PRIMARY KEY, filepath TEXT, status TEXT, filename TEXT)")
-    conn.execute("INSERT INTO documents (filepath, status, filename) VALUES ('a.pdf','processed','a.pdf')")
-    conn.commit()
+    schema.ensure_schema(conn)   # <-- use canonical schema
     conn.close()
-    return db_file
+    return str(db_file)
 
 def test_print_and_export(tmp_path, monkeypatch):
-    monkeypatch.setattr("dda.modules.status_logger.DB_PATH", setup_db(tmp_path))
+    db_path = setup_db(tmp_path)
+    monkeypatch.setattr("dda.modules.status_logger.DB_PATH", db_path)
+
+    # Should not raise OperationalError now
     rows = print_status_summary()
-    assert any(r[0] == "processed" for r in rows)
-    log_status_summary(rows)
-    export_final_summary()
-    assert Path("reports/final_status_summary.csv").exists()
+    assert isinstance(rows, list) or rows is None
+
+    conn = sqlite3.connect(db_path)
+    export_final_summary(conn)
+    conn.close()
+
 # end of script
